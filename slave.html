@@ -1,0 +1,53 @@
+<head>
+  <title>Slave</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+  <link rel="stylesheet" href="./slave.css"/>
+</head>
+<body>
+  <div id="container" style="min-width:100%; min-heigth:100%;"></div>
+  <script>
+    var master = window.opener.document;
+    var masterRefresh = master.querySelector('#refresh');
+    var masterAutoRefresh = master.querySelector('#autorefresh');
+    var masterOnlyEnter = master.querySelector('#onlyenter');
+
+    var container = document.querySelector('#container');
+
+    master.querySelectorAll('.inputs').forEach(bindInput);
+    master.body.addEventListener("addSlide", e => {
+        bindInput(master.querySelector(`#input-${window.opener.numSlides}`))
+      });
+
+
+    function bindInput(input) {
+      var slide = document.createElement('div');
+
+      input.addEventListener("keyup", handler);
+      input.addEventListener("focus", changeSlide);
+      masterRefresh.addEventListener("click", setContent);
+
+      function createSlide() {
+        slide.id = input.id;
+        slide.style = 'min-height: 100vh; border:solid gray; padding:1em; margin:1em 0';
+        setContent();
+        container.appendChild(slide);
+      }
+
+      function setContent() {
+        slide.innerHTML = marked(input.value);
+      }
+
+      function handler(e) {
+        if (masterAutoRefresh.checked && (!masterOnlyEnter.checked || e.keyCode == 13)) {
+          setContent();
+        }
+      }
+
+      function changeSlide(){
+        document.querySelector(`#${slide.id}`).scrollIntoView();
+      }
+
+      createSlide();
+    }
+  </script>
+</body>

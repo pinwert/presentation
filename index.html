@@ -1,0 +1,44 @@
+<head>
+<title>Home</title>
+</head>
+<body>
+  <div style="position: fixed; background: lightgray; width: 98vw; border: solid;">
+    <a href="/slave.html" target="_blank">Open slave</a>
+    <a id="refresh" href="#!">Refresh</a>
+    <a id="newslide" href="#!">New slide</a>
+    <label for="autorefresh">Autorefresh</label>
+    <input type="checkbox" id="autorefresh" checked></input>
+    <label for="onlyenter">Only on Enter</label>
+    <input type="checkbox" id="onlyenter"></input>
+
+  </div>
+  <div id="inputscontainer" style="padding: 2em">
+  </div>
+  <script>
+    var addSlideEvent = new Event('addSlide');
+    var newSlide = document.querySelector('#newslide');
+    var inputs = document.querySelector('#inputscontainer');
+
+    window.numSlides = 0;
+    document.querySelector('#newslide').addEventListener('click', addSlide);
+
+    function addSlide() {
+      numSlides++;
+      var textArea = document.createElement('textarea');
+      textArea.style = "width:100%; height:80vh; margin: 1em 0;";
+      textArea.id = `input-${numSlides}`;
+      textArea.className = 'inputs';
+      textArea.placeholder = `Write the content of Slide ${numSlides} here...`;
+      inputs.appendChild(textArea);
+      document.body.dispatchEvent(addSlideEvent);
+      textArea.addEventListener('focus', () => { textArea.style.height = "80vh"});
+      textArea.addEventListener('blur', () => { textArea.style.height = "5vh"});
+      textArea.focus();
+      textArea.scrollIntoView();
+    }
+
+    (function () {
+      addSlide();
+     })()
+  </script>
+</body>
